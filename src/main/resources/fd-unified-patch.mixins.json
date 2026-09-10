@@ -5,7 +5,10 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"DelightAddonMixin",
-		"RusticInitMixin"
+		"RusticInitMixin",
+		"RespiteInitMixin",
+		"KettleMenuMixin",
+		"KettleRecipeDisplayMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

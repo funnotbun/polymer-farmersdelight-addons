@@ -6,9 +6,11 @@ import eu.pb4.polymer.core.api.block.PolymerBlock;
 import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import eu.pb4.polymer.core.api.item.PolymerCreativeModeTabUtils;
 import eu.pb4.polymer.core.api.item.PolymerItem;
+import eu.pb4.polymer.core.api.other.PolymerMenuUtils;
 import eu.pb4.polymer.core.api.other.PolymerPotion;
 import eu.pb4.polymer.core.api.other.PolymerSoundEvent;
 import eu.pb4.polymer.resourcepack.extras.api.ResourcePackExtras;
+import eu.pb4.polymer.rsm.api.RegistrySyncUtils;
 import eu.pb4.polymer.core.api.utils.PolymerSyncedObject;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -163,11 +165,68 @@ public final class PatchOverlays {
         PolymerBlockUtils.registerBlockEntity(type);
     }
 
+    /** Register every block-entity type in a WHITELISTED namespace. */
+    public static int overlayAllBlockEntities(String namespace) {
+        int count = 0;
+        for (var entry : BuiltInRegistries.BLOCK_ENTITY_TYPE.entrySet()) {
+            if (entry.getKey().identifier().getNamespace().equals(namespace)) {
+                registerBlockEntity(entry.getValue());
+                count++;
+            }
+        }
+        return count;
+    }
+
     public static void registerSound(SoundEvent sound) {
         PolymerSoundEvent.registerOverlay(sound);
     }
 
+    /** Register every sound event in a WHITELISTED namespace. */
+    public static int overlayAllSounds(String namespace) {
+        int count = 0;
+        for (var entry : BuiltInRegistries.SOUND_EVENT.entrySet()) {
+            if (entry.getKey().identifier().getNamespace().equals(namespace)) {
+                registerSound(entry.getValue());
+                count++;
+            }
+        }
+        return count;
+    }
+
     public static void registerEffect(MobEffect effect) {
         PolymerSyncedObject.setSyncedObject(BuiltInRegistries.MOB_EFFECT, effect, (server, context) -> null);
+    }
+
+    /** Hide every mob effect in a WHITELISTED namespace from vanilla sync. */
+    public static int overlayAllEffects(String namespace) {
+        int count = 0;
+        for (var entry : BuiltInRegistries.MOB_EFFECT.entrySet()) {
+            if (entry.getKey().identifier().getNamespace().equals(namespace)) {
+                registerEffect(entry.getValue());
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /** Mark every menu type in a WHITELISTED namespace as server-only. */
+    public static int overlayAllMenus(String namespace) {
+        int count = 0;
+        for (var entry : BuiltInRegistries.MENU.entrySet()) {
+            if (entry.getKey().identifier().getNamespace().equals(namespace)) {
+                PolymerMenuUtils.registerType(entry.getValue());
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Hide one registry entry from vanilla sync (last resort for entries
+     * with no Polymer overlay API, e.g. recipe book categories/displays).
+     * The server keeps full behavior; vanilla clients simply never see it.
+     */
+    public static <T> void hideFromSync(net.minecraft.core.Registry<T> registry, Identifier id) {
+        RegistrySyncUtils.setServerEntry(registry, id);
     }
 }

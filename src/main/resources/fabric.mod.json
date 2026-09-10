@@ -3,7 +3,7 @@
 	"id": "fd-unified-patch",
 	"version": "${version}",
 	"name": "FD Unified Polymer Patch",
-	"description": "One unified Polymer patch for Farmer's Delight addon mods (v0.2: MoreDelight + RusticDelight).",
+	"description": "One unified Polymer patch for Farmer's Delight addon mods (v0.3: MoreDelight + RusticDelight + Farmer's Respite).",
 	"authors": [
 		"fd-unified-patch contributors"
 	],
@@ -30,11 +30,14 @@
 		"polymer-blocks": "0.17.3+26.2",
 		"polymer-resource-pack": "0.17.3+26.2",
 		"polymer-resource-pack-extras": "0.17.3+26.2",
-		"polymer-virtual-entity": "0.17.3+26.2"
+		"polymer-virtual-entity": "0.17.3+26.2",
+		"polymer-registry-sync-manipulator": "0.17.3+26.2",
+		"sgui": "2.1.0+26.2"
 	},
 	"suggests": {
 		"moredelight": "26.06.23-26.2-fabric",
 		"delightlib": "26.06.23-26.2-fabric",
-		"rusticdelight": "1.7.0"
+		"rusticdelight": "1.7.0",
+		"farmersrespite": "2.3.1"
 	}
 }

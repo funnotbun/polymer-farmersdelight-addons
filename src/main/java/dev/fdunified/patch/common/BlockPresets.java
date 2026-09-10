@@ -11,6 +11,8 @@ import eu.pb4.polymer.virtualentity.api.ElementHolder;
 import net.fabricmc.fabric.api.networking.v1.context.PacketContext;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +22,7 @@ import java.util.function.BiFunction;
 /**
  * Reusable FactoryBlock presets mirroring the farmers-delight-patch mapping
  * (solid -&gt; BARRIER, feast/pie -&gt; CAMPFIRE, wild crop -&gt; PLANT, crop -&gt; KELP).
- * None of the covered blocks are waterloggable, so only the base variants exist.
+ * Waterloggable blocks use {@link WaterloggedPreset}; the rest use the base variants.
  */
 public record BlockPresets(BlockState clientState,
                            BiFunction<BlockState, BlockPos, BlockModel> modelFunction) implements FactoryBlock, PolymerTexturedBlock, BSMMParticleBlock {
@@ -42,5 +44,33 @@ public record BlockPresets(BlockState clientState,
     @Override
     public boolean tickElementHolder(ServerLevel world, BlockPos pos, BlockState initialBlockState) {
         return false;
+    }
+
+    /**
+     * Waterloggable counterpart (mirrors the farmers-delight-patch
+     * WaterloggableFactoryBlock). Only BARRIER exists: no covered
+     * waterloggable block needs another client state.
+     */
+    public record Waterlogged(BlockState dryState, BlockState wetState,
+                              BiFunction<BlockState, BlockPos, BlockModel> modelFunction) implements FactoryBlock, PolymerTexturedBlock, BSMMParticleBlock {
+        public static final Waterlogged BARRIER = new Waterlogged(
+                Blocks.BARRIER.defaultBlockState(),
+                Blocks.BARRIER.defaultBlockState().setValue(BarrierBlock.WATERLOGGED, true),
+                BlockStateModel::midRange);
+
+        @Override
+        public BlockState getPolymerBlockState(BlockState state, PacketContext context) {
+            return state.getFluidState().is(FluidTags.WATER) ? wetState : dryState;
+        }
+
+        @Override
+        public @Nullable ElementHolder createElementHolder(ServerLevel world, BlockPos pos, BlockState initialBlockState) {
+            return this.modelFunction.apply(initialBlockState, pos);
+        }
+
+        @Override
+        public boolean tickElementHolder(ServerLevel world, BlockPos pos, BlockState initialBlockState) {
+            return false;
+        }
     }
 }

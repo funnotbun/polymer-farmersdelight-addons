@@ -1,6 +1,7 @@
 package dev.fdunified.patch;
 
 import dev.fdunified.patch.modules.MoreDelightModule;
+import dev.fdunified.patch.modules.RespiteModule;
 import dev.fdunified.patch.modules.RusticModule;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -9,10 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * v0.2: DelightLib-backed MoreDelight plus RusticDelight. Modules gate on
- * FabricLoader.isModLoaded; anything else is a no-op (fail closed, no
- * scanning of unknown namespaces). Rustic overlays trigger from
- * RusticInitMixin (entrypoint-order safe); the entrypoint only arms a guard.
+ * v0.3: DelightLib-backed MoreDelight, RusticDelight, plus Farmer's Respite.
+ * Modules gate on FabricLoader.isModLoaded; anything else is a no-op (fail
+ * closed, no scanning of unknown namespaces). Rustic/Respite overlays
+ * trigger from their init mixins (entrypoint-order safe); the entrypoint
+ * only arms a guard.
  */
 public class FdUnifiedPatch implements ModInitializer {
     public static final String MOD_ID = "fd-unified-patch";
@@ -33,6 +35,14 @@ public class FdUnifiedPatch implements ModInitializer {
             ServerLifecycleEvents.SERVER_STARTING.register(server -> {
                 if (!RusticModule.applied()) {
                     LOGGER.error("[fd-unified-patch] rusticdelight present but overlays never applied; vanilla clients will be rejected (RemapException)");
+                }
+            });
+        }
+        if (loader.isModLoaded("farmersrespite")) {
+            logAddonVersion("farmersrespite", new RespiteModule().versionRange());
+            ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+                if (!RespiteModule.applied()) {
+                    LOGGER.error("[fd-unified-patch] farmersrespite present but overlays never applied; vanilla clients will be rejected (RemapException)");
                 }
             });
         }

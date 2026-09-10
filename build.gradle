@@ -40,6 +40,12 @@ dependencies {
 	implementation "eu.pb4:polymer-resource-pack:${project.polymer_version}"
 	implementation "eu.pb4:polymer-resource-pack-extras:${project.polymer_version}"
 	implementation "eu.pb4:polymer-virtual-entity:${project.polymer_version}"
+	// rsm (registry-sync hide for entries with no Polymer overlay API; nested
+	// inside polymer-core at runtime, never bundled here).
+	implementation "eu.pb4:polymer-reg-sync-manipulator:${project.polymer_version}"
+	// sgui (provided at runtime by the farmers-delight-patch jar, which JiJ-bundles
+	// sgui 2.1.0+26.2; never bundled here to avoid duplicate classes).
+	implementation "eu.pb4:sgui:${project.sgui_version}"
 	// Bundled (same as farmers-delight-patch): overlayBlock helpers reference FactoryBlock.
 	implementation include("eu.pb4:factorytools:${project.factorytools_version}")
 }

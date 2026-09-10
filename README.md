@@ -1,4 +1,4 @@
-# FD Unified Polymer Patch (v0.2)
+# FD Unified Polymer Patch (v0.3)
 
 Unified Polymer patch jar for Farmer's Delight addons
 
@@ -6,6 +6,7 @@ Currently supports:
 
 > DelightLib + MoreDelight
 > Rustic Delight
+> Farmer's Respite (incl. kettle SGUI)
 
 ## Build (fresh clone, no sibling checkouts needed)
 
@@ -18,7 +19,7 @@ export JAVA_HOME="$HOME/.local/jdks/jdk-25.0.4.1+1" PATH="$JAVA_HOME/bin:$PATH"
 
 All dependencies resolve from Maven coordinates pinned in
 `gradle.properties` (Modrinth, Nucleoid, JitPack). Output:
-`build/libs/fd-unified-patch-0.2.0+26.2.jar`.
+`build/libs/fd-unified-patch-0.3.0+26.2.jar`.
 
 ## Agents
 

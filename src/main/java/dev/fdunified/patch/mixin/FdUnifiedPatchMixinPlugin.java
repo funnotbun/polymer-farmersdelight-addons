@@ -31,6 +31,11 @@ public class FdUnifiedPatchMixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.endsWith("RusticInitMixin")) {
             return loader.isModLoaded("rusticdelight");
         }
+        if (mixinClassName.endsWith("RespiteInitMixin")
+                || mixinClassName.endsWith("KettleMenuMixin")
+                || mixinClassName.endsWith("KettleRecipeDisplayMixin")) {
+            return loader.isModLoaded("farmersrespite");
+        }
         return true;
     }
 
