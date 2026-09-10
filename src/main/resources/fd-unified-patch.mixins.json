@@ -1,0 +1,13 @@
+{
+	"required": true,
+	"package": "dev.fdunified.patch.mixin",
+	"plugin": "dev.fdunified.patch.mixin.FdUnifiedPatchMixinPlugin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"DelightAddonMixin",
+		"RusticInitMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

@@ -1,0 +1,81 @@
+plugins {
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	maven { url "https://api.modrinth.com/maven/" }
+	maven { url 'https://maven.nucleoid.xyz' }
+	maven { url "https://jitpack.io" }
+	mavenLocal()
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	// Farmer's Delight Refabricated, immutable Modrinth version (same as farmers-delight-patch).
+	implementation("maven.modrinth:farmers-delight-refabricated:${project.farmersdelight_version}") {
+		exclude(group: "net.fabricmc")
+	}
+
+	// DelightLib Fabric branch, immutable JitPack commit pin (tip of origin/26.2-fabric).
+	// Not bundled: provided at runtime by the pinned delightlib jar (see docs/addons/delightlib.md).
+	// Transitives excluded: our compile surface against DelightLib is vanilla/FD types only.
+	implementation("com.github.axperty:delightlib:${project.delightlib_version}") {
+		transitive = false
+	}
+
+	// Polymer (provided at runtime by polymer-bundled jar; never bundled here).
+	implementation "eu.pb4:polymer-core:${project.polymer_version}"
+	implementation "eu.pb4:polymer-blocks:${project.polymer_version}"
+	implementation "eu.pb4:polymer-resource-pack:${project.polymer_version}"
+	implementation "eu.pb4:polymer-resource-pack-extras:${project.polymer_version}"
+	implementation "eu.pb4:polymer-virtual-entity:${project.polymer_version}"
+	// Bundled (same as farmers-delight-patch): overlayBlock helpers reference FactoryBlock.
+	implementation include("eu.pb4:factorytools:${project.factorytools_version}")
+}
+
+processResources {
+	inputs.property "version", project.version
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.base.archivesName.get()}" }
+	}
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+
+	repositories {
+	}
+}
