@@ -70,9 +70,13 @@
   live input/meal/bottle/output slots, title from the MenuProvider, water
   level from the `water` blockstate property, heat from FD's
   `HeatableBlockEntity`, brew % from BE NBT `CookTime`/`CookTimeTotal`).
-  No compile dependency on Respite anywhere: menu matched by class name,
-  slots/title/heat/progress all read through vanilla/FD types. Plain
-  container skin (no custom GUI texture) is accepted v1 simplification.
+  Skin follows the FD patch system (`RespiteGui`: title-carried background
+  font, generated icon/progress models, `addBridgedModelsFolder` for our
+  `sgui` folder) over user-supplied art in `textures/sgui/` (`kettle.png`
+  background, `arrow`/`water` progress strips sliced at pack build,
+  `heated`/`empty`/`bottle` icons). No compile dependency on Respite
+  anywhere: menu matched by class name, slots/title/heat/progress all read
+  through vanilla/FD types.
 - Trigger: `RespiteInitMixin` at `FarmersRespite.onInitialize` RETURN
   (tab registers last, so all content exists; string target, no dep).
   Entrypoint only arms a fail-closed SERVER_STARTING guard.

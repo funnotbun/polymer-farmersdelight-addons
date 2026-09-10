@@ -59,6 +59,7 @@ public final class RespiteModule implements PatchModule {
     public void apply() {
         PolymerResourcePackUtils.addModAssets(NAMESPACE);
         PatchOverlays.bridgeBlockModels(NAMESPACE);
+        RespiteGui.setup();
         int items = PatchOverlays.overlayAllItems(NAMESPACE);
         int blocks = PatchOverlays.overlayAllBlocks(NAMESPACE, RespiteModule::presetFor);
         int effects = PatchOverlays.overlayAllEffects(NAMESPACE);

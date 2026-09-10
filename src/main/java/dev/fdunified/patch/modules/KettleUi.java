@@ -13,7 +13,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
@@ -42,9 +41,9 @@ public class KettleUi extends SimpleGui {
         this.pos = be.getBlockPos();
         this.mealSlot = menu.slots.get(2);
         this.containerSlot = menu.slots.get(3);
-        this.setTitle(title);
-        this.setSlot(1, menu.slots.get(0));
-        this.setSlot(1 + 9, menu.slots.get(1));
+        this.setTitle(RespiteGui.KETTLE_BACKGROUND.apply(title));
+        this.setSlot(2, menu.slots.get(0));
+        this.setSlot(2 + 9, menu.slots.get(1));
         this.setSlot(6, new MealDisplay(this.mealSlot, this.containerSlot));
         this.setSlot(5 + 9 * 2, menu.slots.get(3));
         this.setSlot(7 + 9 * 2, menu.slots.get(4));
@@ -77,14 +76,20 @@ public class KettleUi extends SimpleGui {
         BlockEntity be = this.level.getBlockEntity(this.pos);
         boolean heated = be instanceof HeatableBlockEntity heatable && heatable.isHeated(this.level, this.pos);
         int[] progress = readProgress(be);
-        int pct = progress[1] > 0 ? Math.min(100, progress[0] * 100 / progress[1]) : 0;
+        long elapsed = Math.max(0, progress[0]);
+        int pct = progress[1] > 0 ? (int) Math.min(100, elapsed * 100 / progress[1]) : 0;
+        int arrowPixels = progress[1] > 0
+                ? Math.max(0, Math.min(16, (int) (elapsed * 40 / progress[1]) - 22)) : 0;
 
-        this.setSlot(4, new ProgressDisplay(pct));
+        this.setSlot(4, RespiteGui.arrowProgress(arrowPixels)
+                .setName(Component.literal("Brewing: " + pct + "%").withStyle(ChatFormatting.GRAY)));
         this.setSlot(2 + 9 * 2, heated
-                ? new StaticIcon(Items.BLAZE_POWDER.getDefaultInstance(), "Heated", ChatFormatting.GOLD)
-                : new StaticIcon(Items.COAL.getDefaultInstance(), "Not heated", ChatFormatting.GRAY));
-        this.setSlot(6 + 9 * 2, new StaticIcon(Items.WATER_BUCKET.getDefaultInstance(),
-                "Water: " + water + "/3", ChatFormatting.AQUA));
+                ? RespiteGui.HEATED_ICON.get()
+                        .setName(Component.literal("Heated").withStyle(ChatFormatting.GOLD))
+                : RespiteGui.EMPTY_ICON.get()
+                        .setName(Component.literal("Not heated").withStyle(ChatFormatting.GRAY)));
+        this.setSlot(1 + 9 * 2, RespiteGui.waterLevel(water)
+                .setName(Component.literal("Water: " + water + "/3").withStyle(ChatFormatting.AQUA)));
     }
 
     /** CookTime/CookTimeTotal straight from BE NBT (no Respite API needed). */
@@ -123,31 +128,4 @@ public class KettleUi extends SimpleGui {
         }
     }
 
-    private record ProgressDisplay(int pct) implements GuiElement {
-        @Override
-        public ItemStack getItemStack() {
-            return GuiElementBuilder.from(Items.ARROW.getDefaultInstance())
-                    .setName(Component.literal("Brewing: " + this.pct + "%").withStyle(ChatFormatting.GRAY))
-                    .asStack();
-        }
-
-        @Override
-        public ClickCallback getGuiCallback() {
-            return GuiElement.EMPTY_CALLBACK;
-        }
-    }
-
-    private record StaticIcon(ItemStack stack, String name, ChatFormatting color) implements GuiElement {
-        @Override
-        public ItemStack getItemStack() {
-            return GuiElementBuilder.from(this.stack.copy())
-                    .setName(Component.literal(this.name).withStyle(this.color))
-                    .asStack();
-        }
-
-        @Override
-        public ClickCallback getGuiCallback() {
-            return GuiElement.EMPTY_CALLBACK;
-        }
-    }
 }

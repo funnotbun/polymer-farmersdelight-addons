@@ -8,6 +8,14 @@ Currently supports:
 > Rustic Delight
 > Farmer's Respite (incl. kettle SGUI)
 
+## TODO
+
+[ ] - fix putting a candle atop farmer's respite cakes and lighting it (candle placing works)
+
+[ ] - fix JEI/REI plugin for farmer's respite
+
+[ ] - add polydex-compatible recipe book into farmer's respite kettle
+
 ## Build (fresh clone, no sibling checkouts needed)
 
 Requires Temurin JDK 25 (e.g. `$HOME/.local/jdks/jdk-25.0.4.1+1`):
