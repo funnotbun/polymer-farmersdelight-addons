@@ -28,11 +28,15 @@ public class FdUnifiedPatchMixinPlugin implements IMixinConfigPlugin {
         if (mixinClassName.endsWith("DelightAddonMixin")) {
             return loader.isModLoaded("delightlib");
         }
-        if (mixinClassName.endsWith("RusticInitMixin")) {
+        if (mixinClassName.endsWith("RusticInitMixin")
+                || mixinClassName.endsWith("RusticTabMixin")) {
             return loader.isModLoaded("rusticdelight");
         }
         if (mixinClassName.endsWith("RespiteInitMixin")
-                || mixinClassName.endsWith("KettleMenuMixin")
+                || mixinClassName.endsWith("RespiteTabMixin")) {
+            return loader.isModLoaded("farmersrespite");
+        }
+        if (mixinClassName.endsWith("KettleMenuMixin")
                 || mixinClassName.endsWith("KettleRecipeDisplayMixin")) {
             return loader.isModLoaded("farmersrespite");
         }

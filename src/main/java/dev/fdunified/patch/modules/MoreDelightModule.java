@@ -19,6 +19,6 @@ public final class MoreDelightModule extends DelightLibModule {
 
     @Override
     public String versionRange() {
-        return "26.06.23-26.2-fabric";
+        return "26.09.16-26.3-fabric";
     }
 }

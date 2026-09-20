@@ -1,6 +1,7 @@
 package dev.fdunified.patch.mixin;
 
 import com.axperty.delightlib.api.DelightAddon;
+import dev.fdunified.patch.common.PatchOverlays;
 import dev.fdunified.patch.modules.DelightLibModule;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
@@ -20,7 +21,8 @@ import java.util.function.Supplier;
  * time so entrypoint order between the patch and content mods does not
  * matter. The build redirect replaces whitelisted vanilla tab registration
  * with Polymer registration, matching the Farmer's Delight patch pattern.
- * Whitelist enforcement lives in DelightLibModule.
+ * The tab check is a static whitelist (entrypoint-order safe); item
+ * whitelist enforcement lives in DelightLibModule.
  */
 @Mixin(DelightAddon.class)
 public class DelightAddonMixin {
@@ -31,7 +33,9 @@ public class DelightAddonMixin {
 
     @Redirect(method = "build", at = @At(value = "INVOKE", target = "Lnet/minecraft/core/Registry;register(Lnet/minecraft/core/Registry;Lnet/minecraft/resources/Identifier;Ljava/lang/Object;)Ljava/lang/Object;", ordinal = 0))
     private Object fdUnified$registerCreativeTab(Registry<Object> registry, Identifier id, Object value) {
-        var tab = (CreativeModeTab) value;
-        return DelightLibModule.onDelightCreativeTabRegistered(id, tab) ? tab : Registry.register(registry, id, value);
+        if (value instanceof CreativeModeTab tab && PatchOverlays.divertTabToPolymer(id, tab)) {
+            return tab;
+        }
+        return Registry.register(registry, id, value);
     }
 }

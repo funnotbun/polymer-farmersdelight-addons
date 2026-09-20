@@ -5,9 +5,11 @@ import dev.fdunified.patch.common.BlockPresets;
 import dev.fdunified.patch.common.PatchModule;
 import dev.fdunified.patch.common.PatchOverlays;
 import eu.pb4.factorytools.api.block.FactoryBlock;
+import eu.pb4.polymer.core.api.item.PolymerCreativeModeTabUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
 import org.slf4j.Logger;
@@ -38,7 +40,7 @@ public final class RusticModule implements PatchModule {
 
     @Override
     public String versionRange() {
-        return "1.7.0";
+        return "1.7.1-jf";
     }
 
     /** First call wins; later calls are a no-op (mixin + entrypoint races). */
@@ -62,7 +64,9 @@ public final class RusticModule implements PatchModule {
         int blocks = PatchOverlays.overlayAllBlocks(NAMESPACE, RusticModule::presetFor);
         int potions = PatchOverlays.overlayAllPotions(NAMESPACE);
         PolymerResourcePackUtils.addModAssets(FdUnifiedPatch.MOD_ID);
-        boolean tab = PatchOverlays.registerTabById(NAMESPACE, "item_group");
+        // Tab is diverted to Polymer by VanillaRegistryTabMixin before vanilla
+        // registration; this only verifies it landed in the Polymer registry.
+        boolean tab = PolymerCreativeModeTabUtils.contains(Identifier.fromNamespaceAndPath(NAMESPACE, "item_group"));
         LOGGER.info("[fd-unified-patch] rusticdelight: {} items, {} blocks, {} potions overlaid, tab={}",
                 items, blocks, potions, tab);
         // Registries are frozen by server start, so this is verification only.

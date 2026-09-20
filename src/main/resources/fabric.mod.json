@@ -3,7 +3,7 @@
 	"id": "fd-unified-patch",
 	"version": "${version}",
 	"name": "FD Unified Polymer Patch",
-	"description": "One unified Polymer patch for Farmer's Delight addon mods (v0.3: MoreDelight + RusticDelight + Farmer's Respite).",
+	"description": "One unified Polymer patch for Farmer's Delight addon mods (v0.4: MoreDelight + RusticDelight + Farmer's Respite).",
 	"authors": [
 		"fd-unified-patch contributors"
 	],
@@ -21,23 +21,23 @@
 		"fd-unified-patch.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.19.3",
-		"minecraft": "~26.2",
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
 		"java": ">=25",
 		"fabric-api": "*",
 		"farmersdelight": "*",
-		"polymer-core": "0.17.3+26.2",
-		"polymer-blocks": "0.17.3+26.2",
-		"polymer-resource-pack": "0.17.3+26.2",
-		"polymer-resource-pack-extras": "0.17.3+26.2",
-		"polymer-virtual-entity": "0.17.3+26.2",
-		"polymer-registry-sync-manipulator": "0.17.3+26.2",
-		"sgui": "2.1.0+26.2"
+		"polymer-core": ">=0.18.0+26.3-rc-1",
+		"polymer-blocks": ">=0.18.0+26.3-rc-1",
+		"polymer-resource-pack": ">=0.18.0+26.3-rc-1",
+		"polymer-resource-pack-extras": ">=0.18.0+26.3-rc-1",
+		"polymer-virtual-entity": ">=0.18.0+26.3-rc-1",
+		"polymer-registry-sync-manipulator": ">=0.18.0+26.3-rc-1",
+		"sgui": ">=2.2.0+26.3"
 	},
 	"suggests": {
-		"moredelight": "26.06.23-26.2-fabric",
-		"delightlib": "26.06.23-26.2-fabric",
-		"rusticdelight": "1.7.0",
+		"moredelight": "26.09.16-26.3-fabric",
+		"delightlib": "26.09.16-26.3-fabric",
+		"rusticdelight": "1.7.1-jf",
 		"farmersrespite": "2.3.1"
 	}
 }

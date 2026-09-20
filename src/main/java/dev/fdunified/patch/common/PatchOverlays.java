@@ -9,12 +9,15 @@ import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.other.PolymerMenuUtils;
 import eu.pb4.polymer.core.api.other.PolymerPotion;
 import eu.pb4.polymer.core.api.other.PolymerSoundEvent;
+import eu.pb4.polymer.networking.impl.ExtConnection;
 import eu.pb4.polymer.resourcepack.extras.api.ResourcePackExtras;
 import eu.pb4.polymer.rsm.api.RegistrySyncUtils;
 import eu.pb4.polymer.core.api.utils.PolymerSyncedObject;
 import eu.pb4.polymer.virtualentity.api.BlockWithElementHolder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.CreativeModeTab;
@@ -23,7 +26,11 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import vectorwing.farmersdelight.common.item.KnifeItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -34,8 +41,20 @@ import java.util.function.Function;
  * bridgeBlockModels (without it, overlaid blocks are missing-texture checkers).
  */
 public final class PatchOverlays {
+    private static final Logger LOGGER = LoggerFactory.getLogger("fd-unified-patch");
+
     private PatchOverlays() {
     }
+
+    /**
+     * Creative tabs diverted to Polymer before vanilla registration (FD-patch
+     * pattern). Post-hoc lookup cannot work: Polymer refuses ids already in
+     * the vanilla registry. A new addon is one line here plus its redirect.
+     */
+    public static final Set<String> POLYMER_TAB_IDS = Set.of(
+            "moredelight:tab",
+            "rusticdelight:item_group",
+            "farmersrespite:group");
 
     /** Overlay one item; knives get the interaction flag (see PolyItem). */
     public static void overlayItem(Item item) {
@@ -151,14 +170,19 @@ public final class PatchOverlays {
         }
     }
 
-    /** Look a tab up by id and register it; returns whether it existed. */
-    public static boolean registerTabById(String namespace, String path) {
-        var tab = BuiltInRegistries.CREATIVE_MODE_TAB.getValue(Identifier.fromNamespaceAndPath(namespace, path));
-        if (tab == null) {
-            return false;
+    /**
+     * Divert a whitelisted tab into Polymer, skipping vanilla registration.
+     * Called from redirect handlers, which must not touch mixin-class state
+     * (Mixin remaps such accesses onto the target class). Returns true when
+     * the caller should use {@code tab} as the registration result.
+     */
+    public static boolean divertTabToPolymer(Identifier id, CreativeModeTab tab) {
+        if (tab != null && POLYMER_TAB_IDS.contains(id.toString())) {
+            PolymerCreativeModeTabUtils.registerPolymerCreativeModeTab(id, tab);
+            LOGGER.info("[fd-unified-patch] {}: creative tab diverted to Polymer", id);
+            return true;
         }
-        registerTab(Identifier.fromNamespaceAndPath(namespace, path), tab);
-        return true;
+        return false;
     }
 
     public static void registerBlockEntity(BlockEntityType<?> type) {
@@ -228,5 +252,43 @@ public final class PatchOverlays {
      */
     public static <T> void hideFromSync(net.minecraft.core.Registry<T> registry, Identifier id) {
         RegistrySyncUtils.setServerEntry(registry, id);
+    }
+
+    /**
+     * Drops every non-vanilla entry from an advancement update for players
+     * without a Polymer handshake. Modded display icons encode as polymer
+     * stacks carrying tags a vanilla client lacks, which kicks with a
+     * DecoderException on grant. Server-side grants, recipe unlocks, and
+     * progress are unaffected; modded tabs simply stay hidden client-side
+     * (same degradation class as the hidden kettle book category).
+     */
+    public static ClientboundUpdateAdvancementsPacket filterAdvancementsForVanilla(
+            ClientboundUpdateAdvancementsPacket packet, ServerPlayer player) {
+        // NOTE: getSupportedVersion() is NOT a vanilla check (it reports the
+        // server's own versions when no handshake happened); hasPolymer() is
+        // only true after a real client hello. Both are internal Polymer API,
+        // safe under the pinned version.
+        boolean polymer = ExtConnection.of(player.connection).polymerNet$hasPolymer();
+        // TEMP-DEBUG: name every advancement packet until the kick source is found.
+        LOGGER.info("[fd-unified-patch] adv-debug player={} polymer={} reset={} added={} progress={} removed={}",
+                player.getScoreboardName(), polymer, packet.shouldReset(),
+                packet.added().stream().map(p -> p.advancement().id().toString()).toList(),
+                packet.progress().keySet().stream().map(Object::toString).toList(),
+                packet.removed().stream().map(Object::toString).toList());
+        if (polymer) {
+            return packet;
+        }
+        var added = packet.added().stream()
+                .filter(p -> p.advancement().id().getNamespace().equals(Identifier.DEFAULT_NAMESPACE))
+                .toList();
+        var progress = new HashMap<>(packet.progress());
+        progress.keySet().removeIf(id -> !id.getNamespace().equals(Identifier.DEFAULT_NAMESPACE));
+        if (added.size() == packet.added().size() && progress.size() == packet.progress().size()) {
+            return packet;
+        }
+        LOGGER.info("[fd-unified-patch] hid {} advancement(s) from vanilla client {}",
+                packet.added().size() - added.size(), player.getScoreboardName());
+        return new ClientboundUpdateAdvancementsPacket(
+                packet.shouldReset(), added, packet.removed(), progress, packet.showAdvancements());
     }
 }

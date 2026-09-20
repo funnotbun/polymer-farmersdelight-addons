@@ -5,8 +5,6 @@ import dev.fdunified.patch.common.PatchOverlays;
 import dev.fdunified.patch.FdUnifiedPatch;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +40,7 @@ public class DelightLibModule implements PatchModule {
 
     @Override
     public String versionRange() {
-        return "26.06.23-26.2-fabric";
+        return "26.09.16-26.3-fabric";
     }
 
     /** Namespaces this module whitelists. Only these are ever touched. */
@@ -73,22 +71,6 @@ public class DelightLibModule implements PatchModule {
             }
         });
         LOGGER.info("[fd-unified-patch] DelightLib module active for {}", namespaces);
-    }
-
-    /** Replaces vanilla tab registration only for an active whitelisted addon. */
-    public static boolean onDelightCreativeTabRegistered(Identifier id, CreativeModeTab tab) {
-        String namespace = id.getNamespace();
-        for (DelightLibModule module : ACTIVE.values()) {
-            if (module.namespaces.contains(namespace)) {
-                PatchOverlays.registerTab(id, tab);
-                LOGGER.info("[fd-unified-patch] {}: creative tab overlaid on addon build", namespace);
-                return true;
-            }
-        }
-        if (WARNED_NAMESPACES.add(namespace)) {
-            LOGGER.info("[fd-unified-patch] ignoring unwhitelisted DelightLib namespace '{}' (fail closed; add a module to support it)", namespace);
-        }
-        return false;
     }
 
     /** Called by the DelightAddon mixin for every DelightLib item registration. */

@@ -27,7 +27,8 @@ dependencies {
 		exclude(group: "net.fabricmc")
 	}
 
-	// DelightLib Fabric branch, immutable JitPack commit pin (tip of origin/26.2-fabric).
+	// DelightLib Fabric branch, immutable JitPack commit pin (exact coordinate
+	// MoreDelight 26.3 compiles against; see gradle.properties).
 	// Not bundled: provided at runtime by the pinned delightlib jar (see docs/addons/delightlib.md).
 	// Transitives excluded: our compile surface against DelightLib is vanilla/FD types only.
 	implementation("com.github.axperty:delightlib:${project.delightlib_version}") {
@@ -44,7 +45,7 @@ dependencies {
 	// inside polymer-core at runtime, never bundled here).
 	implementation "eu.pb4:polymer-reg-sync-manipulator:${project.polymer_version}"
 	// sgui (provided at runtime by the farmers-delight-patch jar, which JiJ-bundles
-	// sgui 2.1.0+26.2; never bundled here to avoid duplicate classes).
+	// sgui 2.2.0+26.3; never bundled here to avoid duplicate classes).
 	implementation "eu.pb4:sgui:${project.sgui_version}"
 	// Bundled (same as farmers-delight-patch): overlayBlock helpers reference FactoryBlock.
 	implementation include("eu.pb4:factorytools:${project.factorytools_version}")

@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * v0.3: DelightLib-backed MoreDelight, RusticDelight, plus Farmer's Respite.
+ * v0.4: DelightLib-backed MoreDelight, RusticDelight, plus Farmer's Respite.
  * Modules gate on FabricLoader.isModLoaded; anything else is a no-op (fail
  * closed, no scanning of unknown namespaces). Rustic/Respite overlays
  * trigger from their init mixins (entrypoint-order safe); the entrypoint

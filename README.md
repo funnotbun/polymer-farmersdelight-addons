@@ -1,4 +1,4 @@
-# Unified FD Polymer Patch (v0.3 for MC 26.2)
+# Unified FD Polymer Patch (v0.4 for MC 26.3)
 
 Unified Polymer patch jar for Farmer's Delight addons
 
@@ -15,11 +15,13 @@ Currently supports:
 
 ## TODO
 
-[ ] - fix putting a candle atop farmer's respite cakes and lighting it (candle placing works)
+[ ] - add polydex-compatible recipe book button into farmer's respite (patch) kettle
 
-[ ] - fix JEI/REI plugin for farmer's respite
+[ ] - replace kettle progress bar with identical behavior to farmer's delight polymer patch (no tooltip, crossing 2 tiles)
 
-[ ] - add polydex-compatible recipe book into farmer's respite kettle
+[ ] - fix strings in farmer's delight (farmersdelight.container.cooking_pot.heated, not_heated)
+
+[ ] - fix polymer lib pin (only accepts exactly 0.17.3 instead of higher than)
 
 ## Build (fresh clone, no sibling checkouts needed)
 

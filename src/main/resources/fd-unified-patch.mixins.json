@@ -5,7 +5,10 @@
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"DelightAddonMixin",
+		"RusticTabMixin",
+		"RespiteTabMixin",
 		"RusticInitMixin",
+		"AdvancementSyncMixin",
 		"RespiteInitMixin",
 		"KettleMenuMixin",
 		"KettleRecipeDisplayMixin"

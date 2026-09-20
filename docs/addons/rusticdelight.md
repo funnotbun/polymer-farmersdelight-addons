@@ -1,17 +1,17 @@
 # RusticDelight addon record (v0.2)
 
 - Source: https://github.com/PhantomWing/RusticDelight
-- Branch: `fabric/26.2`
-- Pinned commit: `9483734c138f832695164c20bf0329ee65bea6eb` ("Add sulfur cube support for giant bell pepper blocks")
-- Mod version: `1.7.0` (gradle.properties `mod_version`; jar `rusticdelight-fabric-26.2-1.7.0.jar`)
-- Jar (test rig, local build): `rusticdelight-fabric-26.2-1.7.0.jar`
+- Branch: `fabric/26.3`
+- Pinned commit: `548fced77eaa3308738c127acedab83b440364a5` ("Release plumbing for 1.7.1-jf")
+- Mod version: `1.7.1-jf` (gradle.properties `mod_version`; jar `rusticdelight-fabric-26.3-1.7.1-jf.jar`)
+- Jar (test rig, local build): `rusticdelight-fabric-26.3-1.7.1-jf.jar`
 - Build coordinates: Farmer's Delight Greenhouse
-  `vectorwing:FarmersDelight:26.2-3.6.6+refabricated`; Cloth Config
+  `maven.modrinth:farmers-delight-refabricated:26.3-3.6.25`; Cloth Config
   `me.shedaniel.cloth:cloth-config-fabric:26.2.155` (see build.gradle).
-- Fabric dependencies (fabric.mod.json, expanded): `fabricloader >=0.19.3`,
-  `minecraft >=26.2 <=26.2`, `java >=25`, `fabric-api >=0.152.2`,
-  `farmersdelight >=26.2-3.6.6`, `cloth-config >=26.2.155`
-- Patch metadata: `suggests: { rusticdelight: 1.7.0 }` (tested pin). No
+- Fabric dependencies (fabric.mod.json, expanded): `fabricloader >=0.19.5`,
+  `minecraft >=26.3 <=26.3`, `java >=25`, `fabric-api >=0.160.6`,
+  `farmersdelight >=26.3-3.6.25`, `cloth-config >=26.2.155`
+- Patch metadata: `suggests: { rusticdelight: 1.7.1-jf }` (tested pin). No
   `breaks`. `delightlib` moved from hard `depends` to `suggests`: the mixin
   plugin gates each mixin on its target mod, so profiles without DelightLib
   (or without Rustic) boot instead of failing on a missing target class.
@@ -71,7 +71,9 @@
 - Potions: `overlayAllPotions` hides the 3 entries from vanilla sync (null
   replacement, same as FD effects); held/brewed stacks degrade to empty
   contents client-side, server brewing unchanged.
-- Creative tab `rusticdelight:item_group` via `registerTabById`.
+- Creative tab `rusticdelight:item_group` diverted to Polymer by
+  `VanillaRegistryTabMixin` before vanilla registration (FD-patch pattern;
+  post-hoc lookup cannot work, Polymer refuses vanilla-registered ids).
 - Assets: `addModAssets("rusticdelight")` + patch id, PLUS
   `bridgeBlockModels("rusticdelight")` — without bridging the whole
   `rusticdelight:block` model folder, overlaid blocks render as
@@ -81,4 +83,11 @@
   (Rustic registers its tab last, so all content exists; string target, no
   compile dep on Rustic). Entrypoint only arms a fail-closed SERVER_STARTING
   guard that ERRORs if the trigger never fired.
-- Tested version: `1.7.0`.
+- Advancements: non-vanilla entries are dropped from
+  `ClientboundUpdateAdvancementsPacket` for players without a Polymer
+  handshake (`AdvancementSyncMixin` + `PatchOverlays`, applies to every
+  modded namespace, not just rustic) — modded display icons encode with
+  tags vanilla clients lack and kick with a DecoderException on first
+  grant (any pickup grants main/root). Server grants, recipe unlocks, and
+  progress are unaffected; modded tabs stay hidden client-side.
+- Tested version: `1.7.1-jf`.

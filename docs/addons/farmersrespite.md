@@ -2,17 +2,17 @@
 
 - Source: https://github.com/funnotbun/farmersrespite-fabric-junkfork
   (Fabric port of the Forge addon by Umpaz/HoboJoe/SoyTutta)
-- Branch: `fabric/26.2`
-- Pinned commit: `d51d45e3483a6be8faf41ddb0e646d91d884a080` ("java 25 for minecraft 25! I mean 26!")
+- Branch: `fabric/26.3`
+- Pinned commit: `8d40216db39440eddb545961e200d563806236bf` ("ci: build on linux only")
 - Mod version: `2.3.1` (gradle.properties `mod_version`; jar `farmersrespite-fabric-2.3.1.jar`)
-- Jar (test rig, local build): `farmersrespite-fabric-2.3.1.jar` (`75994cf88cde21a3fb3c903b156a071c9fea2300f2b3e8e153f2001bad54864c`)
+- Jar (test rig, local build): `farmersrespite-fabric-2.3.1.jar`
 - Build coordinates: Farmer's Delight Greenhouse
-  `vectorwing:FarmersDelight:26.2-3.6.6+refabricated`; Cloth Config
+  `maven.modrinth:farmers-delight-refabricated:26.3-3.6.25`; Cloth Config
   `me.shedaniel.cloth:cloth-config-fabric:26.2.155`; JEI
-  `maven.modrinth:jei:30.32.0.209` (compile-only integration; JEI itself
+  `maven.modrinth:jei:31.0.0.5` (compile-only integration; JEI itself
   stays a user-installed optional dep).
-- Fabric dependencies: `fabricloader >=0.19.3`, `minecraft >=26.2 <=26.2`,
-  `java >=25`, `fabric-api >=0.155.0`, `farmersdelight >=26.2-3.6.6`,
+- Fabric dependencies: `fabricloader >=0.19.5`, `minecraft >=26.3 <=26.3`,
+  `java >=25`, `fabric-api >=0.160.6`, `farmersdelight >=26.3-3.6.25`,
   `cloth-config >=26.2.155` (see fabric.mod.json after expansion).
 - Patch metadata: `suggests: { farmersrespite: 2.3.1 }` (tested pin). No
   `breaks`.
@@ -63,7 +63,8 @@
 - Effects/sounds/block entities: `overlayAllEffects` /
   `overlayAllSounds` / `overlayAllBlockEntities` sweeps (new reusable
   `common/` helpers).
-- Creative tab `farmersrespite:group` via `registerTabById`.
+- Creative tab `farmersrespite:group` diverted to Polymer by
+  `VanillaRegistryTabMixin` before vanilla registration (FD-patch pattern).
 - Assets: `addModAssets("farmersrespite")` + `bridgeBlockModels` + patch id.
 - Kettle GUI: `KettleMenuMixin` (vanilla `ServerPlayer` target, FD's
   injection point) swaps the modded menu for `KettleUi` (SGUI generic-9x3:

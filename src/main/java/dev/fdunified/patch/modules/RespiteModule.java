@@ -5,6 +5,7 @@ import dev.fdunified.patch.common.BlockPresets;
 import dev.fdunified.patch.common.PatchModule;
 import dev.fdunified.patch.common.PatchOverlays;
 import eu.pb4.factorytools.api.block.FactoryBlock;
+import eu.pb4.polymer.core.api.item.PolymerCreativeModeTabUtils;
 import eu.pb4.polymer.resourcepack.api.PolymerResourcePackUtils;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -75,7 +76,9 @@ public final class RespiteModule implements PatchModule {
         PatchOverlays.hideFromSync(BuiltInRegistries.RECIPE_DISPLAY,
                 Identifier.fromNamespaceAndPath(NAMESPACE, "brewing"));
         PolymerResourcePackUtils.addModAssets(FdUnifiedPatch.MOD_ID);
-        boolean tab = PatchOverlays.registerTabById(NAMESPACE, "group");
+        // Tab is diverted to Polymer by VanillaRegistryTabMixin before vanilla
+        // registration; this only verifies it landed in the Polymer registry.
+        boolean tab = PolymerCreativeModeTabUtils.contains(Identifier.fromNamespaceAndPath(NAMESPACE, "group"));
         LOGGER.info("[fd-unified-patch] farmersrespite: {} items, {} blocks, {} effects, {} sounds, {} block entities, {} menus overlaid, tab={}",
                 items, blocks, effects, sounds, blockEntities, menus, tab);
         // Registries are frozen by server start, so this is verification only.

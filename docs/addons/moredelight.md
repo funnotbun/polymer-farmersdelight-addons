@@ -1,16 +1,16 @@
 # MoreDelight addon record (v0.1)
 
 - Source: https://github.com/axperty/moredelight
-- Branch: `26.2-fabric`
-- Pinned commit: `3e2db335dedc3a2019659d596aceae7d629d9615` ("See changelog.md for the latest changes.")
-- Mod version: `26.06.23-26.2-fabric` (gradle.properties)
-- Jar (test rig, local build): `moredelight-26.06.23-26.2-fabric.jar`
+- Branch: `26.3-fabric`
+- Pinned commit: `360e61172756e8b22d4d647753321002c7452d35` ("See changelog.md for the latest changes.")
+- Mod version: `26.09.16-26.3-fabric` (gradle.properties)
+- Jar (test rig, local build): `moredelight-26.09.16-26.3-fabric.jar`
 - Build coordinates: Farmer's Delight
-  `curse.maven:farmers-delight-refabricated-993166:8016410`; DelightLib
-  `com.github.axperty:delightlib:50a7936638`.
+  `curse.maven:farmers-delight-refabricated-993166:8891946`; DelightLib
+  `com.github.axperty:delightlib:f0017bf3f4`.
 - Fabric dependencies (src/main/resources/fabric.mod.json): `fabricloader >=0.19.3`,
-  `minecraft ~26.2`, `java >=25`, `fabric-api *`, `farmersdelight *`, `delightlib *`
-- Patch metadata: `suggests: { moredelight: 26.06.23-26.2-fabric }` (tested pin).
+  `minecraft ~26.3`, `java >=25`, `fabric-api *`, `farmersdelight *`, `delightlib *`
+- Patch metadata: `suggests: { moredelight: 26.09.16-26.3-fabric }` (tested pin).
   No `breaks`: no incompatibility known; do not invent one.
 
 ## Registry inventory (derived from MoreDelight.java @ pinned commit)
@@ -52,7 +52,7 @@
 - Assets: `addModAssets("moredelight")` + patch id.
 - Blocks / block entities / sounds / effects helpers exist in common for
   future modules but are unused here (MoreDelight has none).
-- Tested version: `26.06.23-26.2-fabric`.
+- Tested version: `26.09.16-26.3-fabric`.
 
 ## Extending support
 
