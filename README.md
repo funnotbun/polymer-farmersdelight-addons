@@ -21,7 +21,9 @@ Currently supports:
 
 [ ] - fix strings in farmer's delight (farmersdelight.container.cooking_pot.heated, not_heated)
 
-[ ] - fix polymer lib pin (only accepts exactly 0.17.3 instead of higher than)
+[ ] - "Who Needs Cotton?" achievement (turn cotton into string) triggers when regularly picking up cotton 
+
+[ ] - planted peppers are auto waterlogged
 
 ## Build (fresh clone, no sibling checkouts needed)
 
